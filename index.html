@@ -3,257 +3,405 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Filtro de Contacto — Cámara Obscura</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@500;600&family=Archivo:wght@400;500;600&family=Space+Mono&display=swap" rel="stylesheet">
+<title>Cámara Obscura</title>
+
 <style>
+  @font-face{font-family:"Stark"; src:url("fonts/Stark.otf") format("opentype"); font-weight:400; font-display:swap;}
+  @font-face{font-family:"Alte Haas Grotesk"; src:url("fonts/AlteHaasGroteskRegular.ttf") format("truetype"); font-weight:400; font-display:swap;}
+  @font-face{font-family:"Alte Haas Grotesk"; src:url("fonts/AlteHaasGroteskBold.ttf") format("truetype"); font-weight:700; font-display:swap;}
+
   :root{
-    --bg: #14110f;
-    --surface: #1c1815;
-    --surface-2: #241f1b;
-    --line: #342d27;
-    --text: #f1ece3;
-    --muted: #a89c8d;
+    --bg: #161513;
+    --surface: #1e1c19;
+    --line: #322f2a;
+    --text: #f3efe8;
+    --muted: #9c968c;
     --accent: #c1432b;
     --tag-portrait: #d8a13f;
-  }
-  @media (prefers-color-scheme: light){
-    :root:not([data-theme="dark"]){
-      --bg: #f4efe7; --surface: #fffdfa; --surface-2: #ece4d8; --line: #ddd2c2;
-      --text: #1c1815; --muted: #6d6255; --accent: #b23c26; --tag-portrait: #9c6f18;
-    }
-  }
-  :root[data-theme="light"]{
-    --bg: #f4efe7; --surface: #fffdfa; --surface-2: #ece4d8; --line: #ddd2c2;
-    --text: #1c1815; --muted: #6d6255; --accent: #b23c26; --tag-portrait: #9c6f18;
-  }
-  :root[data-theme="dark"]{
-    --bg: #14110f; --surface: #1c1815; --surface-2: #241f1b; --line: #342d27;
-    --text: #f1ece3; --muted: #a89c8d; --accent: #c1432b; --tag-portrait: #d8a13f;
+    --font-display: "Stark", "Archivo", sans-serif;
+    --font-body: "Alte Haas Grotesk", "Archivo", sans-serif;
+    --font-mono: "Space Mono", monospace;
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;}
+  html{scroll-behavior:smooth;}
   body{
     background:var(--bg);
     color:var(--text);
-    font-family:"Archivo", -apple-system, sans-serif;
+    font-family:var(--font-body);
     padding-inline:20px;
-    padding-block:0 40px;
   }
-  .wrap{max-width:1180px;margin:0 auto;}
-  .eyebrow{font-family:"Space Mono", monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
-  h1{
-    font-family:"Bodoni Moda", Georgia, serif;
-    font-weight:600;
-    font-size:clamp(32px,5.5vw,56px);
-    line-height:1.02;
-    letter-spacing:-.01em;
-    margin:6px 0 10px;
-    text-wrap:balance;
+  .page{max-width:900px;margin:0 auto;}
+  a{color:inherit;}
+  .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+  h1,h2,h3{font-family:var(--font-display);font-weight:400;letter-spacing:.01em;text-wrap:balance;margin:0;}
+  section{border-top:1px solid var(--line);padding-block:56px;}
+  section:first-of-type{border-top:none;}
+
+  /* header */
+  header.site{padding-block:28px 18px;position:relative;}
+  .head-row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+  .wordmark{font-family:var(--font-display);font-size:clamp(26px,4vw,36px);letter-spacing:.01em;text-decoration:none;color:var(--text);line-height:1;}
+  .device-toggle{display:flex;gap:6px;flex:none;}
+  .device-toggle button{
+    width:34px;height:34px;border-radius:3px;border:1px solid var(--line);background:var(--surface);
+    color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer;
   }
-  header.hero{padding-block:36px 26px;border-bottom:1px solid var(--line);}
-  .hero-sub{max-width:60ch;color:var(--muted);font-size:15px;line-height:1.55;}
+  .device-toggle button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);}
+  .device-toggle svg{width:16px;height:16px;}
+  .hamburger{display:none;width:34px;height:34px;border-radius:3px;border:1px solid var(--line);background:var(--surface);align-items:center;justify-content:center;cursor:pointer;flex:none;}
+  .hamburger svg{width:16px;height:16px;}
+
+  nav.main{margin-top:16px;}
+  nav.main ul{list-style:none;display:flex;flex-wrap:wrap;gap:20px;margin:0;padding:0;}
+  nav.main a{
+    font-family:var(--font-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+    text-decoration:none;color:var(--muted);padding-bottom:2px;border-bottom:1px solid transparent;
+    transition:color .15s ease, border-color .15s ease;
+  }
+  nav.main a:hover,nav.main a.active{color:var(--text);border-color:var(--accent);}
+  nav.mobile-panel{display:none;flex-direction:column;gap:14px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);}
+  nav.mobile-panel a{font-family:var(--font-mono);font-size:13px;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;color:var(--muted);}
+
+  .hero-lead{max-width:56ch;color:var(--muted);font-size:15.5px;line-height:1.65;margin-top:14px;}
+
   .note{
-    margin-top:18px;padding:12px 14px;background:var(--surface-2);
+    margin-top:18px;padding:12px 14px;background:var(--surface);
     border:1px solid var(--line);border-radius:3px;font-size:13px;line-height:1.5;
-    color:var(--muted);max-width:64ch;
+    color:var(--muted);max-width:64ch;font-family:var(--font-mono);
   }
-  .note b{color:var(--text);font-weight:600;}
-  .controls{
-    position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);
-    padding-block:16px;border-bottom:1px solid var(--line);
-    display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;z-index:5;
+  .note b{color:var(--text);font-weight:400;}
+
+  h2.section-title{font-size:clamp(26px,4vw,38px);margin:8px 0 6px;}
+  .section-sub{color:var(--muted);font-size:14.5px;max-width:58ch;line-height:1.6;margin-bottom:6px;}
+
+  /* photo stack (single big column) */
+  .stack{display:flex;flex-direction:column;gap:56px;margin-top:36px;}
+  .piece{}
+  .shot{
+    position:relative;width:100%;aspect-ratio:3/2;border-radius:2px;overflow:hidden;
+    background:var(--surface);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
   }
-  .pillrow{display:flex;flex-wrap:wrap;gap:8px;}
-  .pill{
-    font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.02em;
-    padding:8px 14px;border-radius:999px;border:1px solid var(--line);
-    background:var(--surface);color:var(--muted);cursor:pointer;
-    transition:background .15s ease, color .15s ease, border-color .15s ease;
-  }
-  .pill:hover{border-color:var(--accent);}
-  .pill[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff8f0;}
-  .switchgroup{display:flex;align-items:center;gap:10px;font-family:"Space Mono",monospace;font-size:12px;color:var(--muted);}
-  .switch{position:relative;width:40px;height:22px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);cursor:pointer;flex:none;}
-  .switch::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--muted);transition:transform .18s ease, background .18s ease;}
-  .switch[aria-pressed="true"]{border-color:var(--tag-portrait);}
-  .switch[aria-pressed="true"]::after{transform:translateX(18px);background:var(--tag-portrait);}
-  .count{font-family:"Space Mono",monospace;font-size:12px;color:var(--muted);white-space:nowrap;}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px;padding-block:28px;}
-  .frame{background:var(--surface);border:1px solid var(--line);border-radius:2px;overflow:hidden;transition:opacity .18s ease, transform .18s ease;}
-  .frame[hidden]{display:none;}
-  .shot{position:relative;aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-  .shot svg{width:62%;height:62%;position:relative;z-index:2;}
-  .grain{position:absolute;inset:0;opacity:.5;mix-blend-mode:overlay;z-index:3;pointer-events:none;}
-  .cat-registro .shot{background:linear-gradient(155deg,#5c5346,#8a7c63 55%,#3c362d);}
-  .cat-registro svg{fill:#e9ddc8;opacity:.9;}
-  .cat-negativo .shot{background:linear-gradient(155deg,#1c0a2e,#5c1246 55%,#0d1a3d);filter:saturate(1.6);}
-  .cat-negativo svg{fill:#d6ff5c;mix-blend-mode:screen;}
+  .shot svg.icon{width:20%;height:20%;position:relative;z-index:2;}
+  .grain{position:absolute;inset:0;opacity:.45;mix-blend-mode:overlay;z-index:3;pointer-events:none;}
+  .cat-sociales .shot{background:linear-gradient(155deg,#4d473c,#7a6d54 55%,#332e26);}
+  .cat-sociales svg.icon{fill:#e9ddc8;opacity:.9;}
+  .cat-negativo .shot{background:linear-gradient(155deg,#1c0a2e,#5c1246 55%,#0d1a3d);filter:saturate(1.55);}
+  .cat-negativo svg.icon{fill:#d6ff5c;mix-blend-mode:screen;}
   .cat-portadas .shot{background:linear-gradient(155deg,#0f2e2b,#132538 60%,#050708);}
-  .cat-portadas svg{fill:#f2c14e;}
-  .cat-portadas .shot::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg, rgba(242,193,78,.35), transparent 60%);mix-blend-mode:color-dodge;}
-  .meta{padding:10px 12px 12px;font-family:"Space Mono",monospace;}
-  .meta .frameno{font-size:11px;color:var(--muted);letter-spacing:.05em;}
-  .meta .title{font-family:"Archivo",sans-serif;font-size:14px;font-weight:600;margin:3px 0 6px;color:var(--text);}
-  .tags{display:flex;flex-wrap:wrap;gap:5px;}
-  .tag{font-size:10px;letter-spacing:.04em;padding:2px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted);text-transform:uppercase;}
+  .cat-portadas svg.icon{fill:#f2c14e;}
+  .cat-portadas .shot::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg, rgba(242,193,78,.32), transparent 60%);mix-blend-mode:color-dodge;}
+
+  .caption{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:12px;flex-wrap:wrap;}
+  .caption .frameno{font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:.05em;}
+  .caption .title{font-family:var(--font-body);font-weight:700;font-size:15px;}
+  .tags{display:flex;gap:6px;}
+  .tag{font-family:var(--font-mono);font-size:10px;letter-spacing:.04em;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted);text-transform:uppercase;}
   .tag.portrait{border-color:var(--tag-portrait);color:var(--tag-portrait);}
-  .proc-btn{margin-top:9px;background:none;border:none;padding:0;font-family:"Space Mono",monospace;font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
-  .process{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:6px;margin-top:10px;overflow:hidden;max-height:0;transition:max-height .22s ease;}
-  .process.open{max-height:80px;}
-  .process .step{aspect-ratio:1;border-radius:2px;background:var(--surface-2);border:1px solid var(--line);}
-  .process .arrow{color:var(--muted);font-size:12px;}
-  .process .step.base{background:linear-gradient(155deg,#5c5346,#8a7c63);}
-  .process .step.mid{background:linear-gradient(155deg,#1c0a2e,#5c1246);}
-  .process .step.final{background:linear-gradient(155deg,#0f2e2b,#132538);}
-  .howitworks{border-top:1px solid var(--line);padding-block:30px 50px;display:grid;gap:22px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));}
-  .howitworks h2{font-family:"Bodoni Moda",serif;font-size:19px;margin:0 0 8px;}
-  .howitworks p{color:var(--muted);font-size:13.5px;line-height:1.6;margin:0;}
-  .kbd{font-family:"Space Mono",monospace;background:var(--surface-2);border:1px solid var(--line);padding:1px 6px;border-radius:3px;font-size:12px;}
-  @media (prefers-reduced-motion: reduce){.frame,.process,.switch::after{transition:none;}}
+
+  /* before/after piece */
+  .ba{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;}
+  @media (max-width:640px){.ba{grid-template-columns:1fr;}}
+  .ba .shot{aspect-ratio:4/5;}
+  .ba .arrow{font-family:var(--font-mono);color:var(--muted);font-size:13px;text-align:center;}
+  .ba-label{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+
+  .subhead{margin-top:52px;}
+  .subhead:first-of-type{margin-top:36px;}
+  .subhead h3{font-size:clamp(19px,2.6vw,24px);}
+
+  /* about */
+  .about{display:grid;grid-template-columns:.85fr 1.15fr;gap:40px;align-items:start;margin-top:30px;}
+  @media (max-width:680px){.about{grid-template-columns:1fr;}}
+  .about-portrait{aspect-ratio:4/5;border-radius:2px;position:relative;overflow:hidden;background:linear-gradient(155deg,#0f2e2b,#132538 60%,#050708);border:1px solid var(--line);}
+  .about-portrait svg{width:42%;height:42%;fill:#f2c14e;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;}
+  .placeholder-box{border:1px dashed var(--line);border-radius:3px;padding:16px 18px;color:var(--muted);font-size:14.5px;line-height:1.65;font-style:italic;}
+  .placeholder-label{display:inline-block;font-style:normal;font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:2px 8px;margin-bottom:10px;}
+
+  /* contact */
+  .contact-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:32px;margin-top:26px;}
+  @media (max-width:680px){.contact-grid{grid-template-columns:1fr;}}
+  .contact-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;}
+  .contact-list li{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding-bottom:12px;font-family:var(--font-mono);font-size:13px;}
+  .contact-list span:first-child{color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-size:11px;}
+  .social-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;}
+  .social-links a{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:6px 14px;text-decoration:none;color:var(--muted);}
+  .social-links a:hover{border-color:var(--accent);color:var(--accent);}
+
+  .backtotop{display:inline-flex;align-items:center;gap:6px;margin-top:34px;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;text-decoration:none;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:2px;}
+  .backtotop:hover{color:var(--accent);border-color:var(--accent);}
+
+  footer{padding-block:30px 50px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;color:var(--muted);font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;border-top:1px solid var(--line);}
+
+  /* --- phone preview mode --- */
+  body.preview-phone{background:#0b0b0a;}
+  body.preview-phone .page{
+    max-width:390px;border:1px solid var(--line);border-radius:22px;
+    padding-top:14px;background:var(--bg);box-shadow:0 30px 60px rgba(0,0,0,.5);
+  }
+  body.preview-phone nav.main{display:none;}
+  body.preview-phone .hamburger{display:flex;}
+  body.preview-phone section{padding-block:36px;}
+
+  @media (max-width:680px){
+    nav.main{display:none;}
+    .hamburger{display:flex;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+  }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono&display=swap" rel="stylesheet">
+
 </head>
 <body>
-<div class="wrap">
-  <header class="hero">
-    <div class="eyebrow">Cámara Obscura — prueba de mecanismo</div>
-    <h1>Sí, se puede filtrar por etiqueta</h1>
-    <p class="hero-sub">Esto es código funcionando, no un mockup: un eje de categoría (Registro social / Negativo+color / Portadas) que se puede combinar con un segundo eje transversal (Retratos), igual a como lo charlamos. Probá los botones.</p>
-    <div class="note"><b>Esto es un prototipo, no el portfolio final.</b> Los cuadros de abajo son marcadores de posición generados con CSS —no fotos reales— para poder mostrar cómo se comporta el filtro. Cuando tengas las imágenes definitivas, cada marcador se reemplaza por la foto y conserva sus mismas etiquetas.</div>
+<div class="page" id="top">
+  <header class="site">
+    <div class="head-row">
+      <a href="#top" class="wordmark">Cámara Obscura</a>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <div class="device-toggle" role="group" aria-label="Vista previa">
+          <button type="button" id="btnDesktop" aria-pressed="true" aria-label="Vista escritorio" title="Vista escritorio">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="4" width="20" height="13" rx="1.5"/><path d="M8 21h8M12 17v4"/></svg>
+          </button>
+          <button type="button" id="btnPhone" aria-pressed="false" aria-label="Vista teléfono" title="Vista teléfono">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
+          </button>
+        </div>
+        <button type="button" class="hamburger" id="btnMenu" aria-expanded="false" aria-label="Abrir menú">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <nav class="main">
+      <ul>
+        <li><a href="#portfolio" data-nav="portfolio">Portfolio</a></li>
+        <li><a href="#sociales" data-nav="sociales">Sociales</a></li>
+        <li><a href="#intervencion" data-nav="intervencion">Intervención digital</a></li>
+        <li><a href="#sobre-mi" data-nav="sobre-mi">Sobre mí</a></li>
+        <li><a href="#contacto" data-nav="contacto">Contacto</a></li>
+      </ul>
+    </nav>
+    <nav class="mobile-panel" id="mobilePanel">
+      <a href="#portfolio">Portfolio</a>
+      <a href="#sociales">Sociales</a>
+      <a href="#intervencion">Intervención digital</a>
+      <a href="#sobre-mi">Sobre mí</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
   </header>
 
-  <div class="controls">
-    <div class="pillrow" id="catPills" role="group" aria-label="Filtro por categoría">
-      <button class="pill" data-cat="all" aria-pressed="true">Todos</button>
-      <button class="pill" data-cat="registro" aria-pressed="false">Registro social</button>
-      <button class="pill" data-cat="negativo" aria-pressed="false">Negativo + color</button>
-      <button class="pill" data-cat="portadas" aria-pressed="false">Portadas</button>
-    </div>
-    <div class="switchgroup">
-      <span>Solo retratos</span>
-      <button class="switch" id="portraitSwitch" aria-pressed="false" aria-label="Filtrar solo retratos"></button>
-    </div>
-    <div class="count" id="count"></div>
-  </div>
+  <section id="portfolio">
+    <div class="eyebrow">Portfolio</div>
+    <h2 class="section-title">Todo el trabajo, en orden</h2>
+    <p class="section-sub">El recorrido completo: del registro social a la intervención digital, sin separar por categoría.</p>
+    <div class="note"><b>Marcadores de posición.</b> Estos cuadros están generados con CSS —todavía no son fotos reales—, listos para reemplazarse por tus imágenes definitivas conservando el mismo orden y las mismas etiquetas.</div>
+    <div class="stack" id="stackAll"></div>
+    <a href="#top" class="backtotop">↑ Volver arriba</a>
+  </section>
 
-  <div class="grid" id="grid"></div>
+  <section id="sociales">
+    <div class="eyebrow">Sociales</div>
+    <h2 class="section-title">Registro social</h2>
+    <p class="section-sub">Eventos, 15s, bandas y djs — la carta de presentación técnica.</p>
+    <div class="stack" id="stackSociales"></div>
+    <a href="#top" class="backtotop">↑ Volver arriba</a>
+  </section>
 
-  <section class="howitworks">
-    <div>
-      <h2>Categoría vs. etiqueta</h2>
-      <p>Los pills de arriba (Registro social, Negativo+color, Portadas) son la estructura narrativa: cada foto pertenece a una sola. El switch "Retratos" es una etiqueta transversal (<span class="kbd">data-tags="retrato"</span>): puede estar prendida sobre cualquier categoría a la vez, sin romper el recorrido registrar → intervenir.</p>
+  <section id="intervencion">
+    <div class="eyebrow">Intervención digital</div>
+    <h2 class="section-title">De la foto al concepto</h2>
+    <p class="section-sub">Dos líneas de trabajo autoral, cada una con su propia intención de llegada.</p>
+
+    <div class="subhead">
+      <h3>Negativo + color</h3>
+      <p class="section-sub">Abstracción y desrealización de la imagen.</p>
     </div>
-    <div>
-      <h2>Ver proceso</h2>
-      <p>En las piezas de Intervención digital, "ver proceso" despliega la tira base → intervención → resultado que mencionaste, como capa opcional en vez de mostrarla siempre — así la imagen final sigue siendo la protagonista.</p>
+    <div class="stack" id="stackNegativo"></div>
+
+    <div class="subhead">
+      <h3>Portadas</h3>
+      <p class="section-sub">Construcción de personaje, paleta y actitud.</p>
     </div>
-    <div>
-      <h2>Cómo reemplazar las fotos</h2>
-      <p>Cada tarjeta vive en el array <span class="kbd">items</span> al final del archivo. Cambiá el ícono de placeholder por <span class="kbd">&lt;img src="tu-foto.jpg"&gt;</span>, ajustá <span class="kbd">title</span> y <span class="kbd">tags</span>, y el filtro sigue funcionando igual.</p>
+    <div class="stack" id="stackPortadas"></div>
+    <a href="#top" class="backtotop">↑ Volver arriba</a>
+  </section>
+
+  <section id="sobre-mi">
+    <div class="eyebrow">Sobre mí</div>
+    <h2 class="section-title">Quién está detrás de la cámara</h2>
+    <div class="about">
+      <div class="about-portrait">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="34" r="18"/><path d="M20 92c0-22 13-36 30-36s30 14 30 36"/></svg>
+      </div>
+      <div>
+        <div class="placeholder-box">
+          <span class="placeholder-label">Placeholder — reemplazar por tu texto</span><br>
+          Escribí acá 3 a 5 líneas: cómo empezaste a fotografiar, qué te atrae de cubrir eventos en vivo, y qué buscás cuando una foto deja de ser un registro y se convierte en materia para intervenir.
+        </div>
+      </div>
     </div>
   </section>
+
+  <section id="contacto">
+    <div class="eyebrow">Contacto</div>
+    <h2 class="section-title">Trabajemos juntas</h2>
+    <div class="contact-grid">
+      <div>
+        <p class="section-sub">¿Tenés un evento, una idea o un proyecto de tapa/campaña en mente? Escribime y lo charlamos.</p>
+        <div class="social-links">
+          <a href="#">Instagram</a>
+          <a href="#">Behance</a>
+          <a href="#">WhatsApp</a>
+        </div>
+      </div>
+      <ul class="contact-list">
+        <li><span>Mail</span><span>tu@email.com</span></li>
+        <li><span>Instagram</span><span>@tuusuario</span></li>
+        <li><span>Zona</span><span>Córdoba / a coordinar</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <span>Cámara Obscura — registro y transformación</span>
+    <a href="#top" class="backtotop" style="margin-top:0;">↑ Volver arriba</a>
+  </footer>
 </div>
 
 <script>
 (function(){
-  var svgPerson = '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="34" r="18"/><path d="M20 92c0-22 13-36 30-36s30 14 30 36"/></svg>';
-  var svgCrowd = '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="40" r="12"/><path d="M12 88c0-16 8-26 18-26s18 10 18 26"/><circle cx="68" cy="34" r="14"/><path d="M46 92c0-19 10-30 22-30s22 11 22 30"/></svg>';
-  var svgBurst = '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 4 L58 40 L92 30 L62 52 L86 82 L50 62 L14 82 L38 52 L8 30 L42 40 Z"/></svg>';
+  var svgPerson = '<svg class="icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="34" r="18"/><path d="M20 92c0-22 13-36 30-36s30 14 30 36"/></svg>';
+  var svgCrowd = '<svg class="icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="40" r="12"/><path d="M12 88c0-16 8-26 18-26s18 10 18 26"/><circle cx="68" cy="34" r="14"/><path d="M46 92c0-19 10-30 22-30s22 11 22 30"/></svg>';
+  var svgBurst = '<svg class="icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 4 L58 40 L92 30 L62 52 L86 82 L50 62 L14 82 L38 52 L8 30 L42 40 Z"/></svg>';
 
-  function grainSvg(i){
-    var id = "grain-" + i;
-    return '<svg class="grain" xmlns="http://www.w3.org/2000/svg"><filter id="' + id + '"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#' + id + ')"/></svg>';
+  function grainSvg(id){
+    return '<svg class="grain" xmlns="http://www.w3.org/2000/svg"><filter id="g'+id+'"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#g'+id+')"/></svg>';
   }
 
-  var items = [
-    {cat:"registro", title:"15 años — salón", tags:["evento"], icon:svgCrowd},
-    {cat:"registro", title:"Retrato backstage, banda", tags:["retrato"], icon:svgPerson},
-    {cat:"registro", title:"DJ set, pista llena", tags:["evento"], icon:svgCrowd},
-    {cat:"registro", title:"Retrato de novios", tags:["retrato"], icon:svgPerson},
-    {cat:"registro", title:"Egresados, previa", tags:["evento"], icon:svgCrowd},
-    {cat:"negativo", title:"Retrato invertido 01", tags:["retrato","abstracción"], icon:svgPerson},
-    {cat:"negativo", title:"Estudio de color, serie A", tags:["abstracción"], icon:svgBurst},
+  var catLabel = {sociales:"Sociales", negativo:"Negativo + color", portadas:"Portadas"};
+  var uid = 0;
+
+  function shotHTML(cat){
+    uid++;
+    return '<div class="shot cat-'+cat+'">'+ (cat==="sociales" ? (Math.random()>0.4?svgCrowd:svgPerson) : svgPerson) + grainSvg(uid) + '</div>';
+  }
+  function shotHTMLIcon(cat, icon){
+    uid++;
+    return '<div class="shot cat-'+cat+'">'+ icon + grainSvg(uid) + '</div>';
+  }
+
+  function frame(item, index){
+    var frameNo = "N°" + String(index+1).padStart(3,"0");
+    var el = document.createElement("div");
+    el.className = "piece";
+    el.innerHTML =
+      shotHTMLIcon(item.cat, item.icon) +
+      '<div class="caption">' +
+        '<span class="frameno">' + frameNo + ' — ' + catLabel[item.cat] + '</span>' +
+        '<span class="tags">' + item.tags.map(function(t){return '<span class="tag'+(t==="retrato"?" portrait":"")+'">'+t+'</span>';}).join("") + '</span>' +
+      '</div>' +
+      '<div class="caption" style="margin-top:2px;"><span class="title">'+item.title+'</span></div>';
+    return el;
+  }
+
+  function beforeAfter(item, index){
+    var frameNo = "N°" + String(index+1).padStart(3,"0");
+    var el = document.createElement("div");
+    el.className = "piece";
+    el.innerHTML =
+      '<div class="ba-label">Antes → Resultado</div>' +
+      '<div class="ba">' +
+        shotHTMLIcon(item.cat, item.icon).replace('class="shot', 'style="aspect-ratio:4/5" class="shot') +
+        '<span class="arrow">→</span>' +
+        shotHTMLIcon(item.cat, item.icon) +
+      '</div>' +
+      '<div class="caption">' +
+        '<span class="frameno">' + frameNo + ' — ' + catLabel[item.cat] + '</span>' +
+        '<span class="tags">' + item.tags.map(function(t){return '<span class="tag'+(t==="retrato"?" portrait":"")+'">'+t+'</span>';}).join("") + '</span>' +
+      '</div>' +
+      '<div class="caption" style="margin-top:2px;"><span class="title">'+item.title+'</span></div>';
+    return el;
+  }
+
+  var sociales = [
+    {cat:"sociales", title:"15 años — salón", tags:["evento"], icon:svgCrowd},
+    {cat:"sociales", title:"Retrato backstage, banda", tags:["retrato"], icon:svgPerson},
+    {cat:"sociales", title:"DJ set, pista llena", tags:["evento"], icon:svgCrowd},
+    {cat:"sociales", title:"Retrato de novios", tags:["retrato"], icon:svgPerson},
+    {cat:"sociales", title:"Egresados, previa", tags:["evento"], icon:svgCrowd}
+  ];
+  var negativo = [
+    {cat:"negativo", title:"Retrato invertido 01", tags:["retrato","abstracción"], icon:svgPerson, ba:true},
+    {cat:"negativo", title:"Estudio de color, serie A", tags:["abstracción"], icon:svgBurst, ba:true},
     {cat:"negativo", title:"Retrato invertido 02", tags:["retrato","abstracción"], icon:svgPerson},
     {cat:"negativo", title:"Desrealización, serie B", tags:["abstracción"], icon:svgBurst},
-    {cat:"portadas", title:"Personaje 01 — duotono", tags:["retrato","personaje"], icon:svgPerson},
-    {cat:"portadas", title:"Personaje 02 — duotono", tags:["retrato","personaje"], icon:svgPerson},
+    {cat:"negativo", title:"Retrato invertido 03", tags:["retrato","abstracción"], icon:svgPerson},
+    {cat:"negativo", title:"Estudio de color, serie C", tags:["abstracción"], icon:svgBurst}
+  ];
+  var portadas = [
+    {cat:"portadas", title:"Personaje 01 — duotono", tags:["retrato","personaje"], icon:svgPerson, ba:true},
+    {cat:"portadas", title:"Personaje 02 — duotono", tags:["retrato","personaje"], icon:svgPerson, ba:true},
     {cat:"portadas", title:"Pieza de campaña, actitud", tags:["personaje"], icon:svgBurst},
-    {cat:"portadas", title:"Personaje 03 — alto contraste", tags:["retrato","personaje"], icon:svgPerson}
+    {cat:"portadas", title:"Personaje 03 — alto contraste", tags:["retrato","personaje"], icon:svgPerson},
+    {cat:"portadas", title:"Personaje 04 — duotono frío", tags:["retrato","personaje"], icon:svgPerson},
+    {cat:"portadas", title:"Pieza de campaña, serie 02", tags:["personaje"], icon:svgBurst}
   ];
 
-  var catLabel = {registro:"Registro social", negativo:"Negativo + color", portadas:"Portadas"};
-
-  var grid = document.getElementById("grid");
-  var frag = document.createDocumentFragment();
-
-  items.forEach(function(item, i){
-    var frame = document.createElement("article");
-    frame.className = "frame cat-" + item.cat;
-    frame.dataset.cat = item.cat;
-    frame.dataset.tags = item.tags.join(" ");
-
-    var hasProcess = item.cat !== "registro";
-    var frameNo = "N°" + String(i+1).padStart(3,"0");
-
-    frame.innerHTML =
-      '<div class="shot">' + item.icon + grainSvg(i) + '</div>' +
-      '<div class="meta">' +
-        '<div class="frameno">' + frameNo + ' — ' + catLabel[item.cat] + '</div>' +
-        '<div class="title">' + item.title + '</div>' +
-        '<div class="tags">' + item.tags.map(function(t){
-          return '<span class="tag' + (t==="retrato" ? " portrait" : "") + '">' + t + '</span>';
-        }).join("") + '</div>' +
-        (hasProcess ? '<button class="proc-btn" type="button">Ver proceso</button>' +
-          '<div class="process"><div class="step base"></div><span class="arrow">→</span><div class="step mid"></div><span class="arrow">→</span><div class="step final"></div></div>' : '') +
-      '</div>';
-
-    frag.appendChild(frame);
-  });
-  grid.appendChild(frag);
-
-  grid.querySelectorAll(".proc-btn").forEach(function(btn){
-    btn.addEventListener("click", function(){
-      var proc = btn.nextElementSibling;
-      var open = proc.classList.toggle("open");
-      btn.textContent = open ? "Ocultar proceso" : "Ver proceso";
+  function fill(id, items, offset){
+    var host = document.getElementById(id);
+    items.forEach(function(item, i){
+      host.appendChild(item.ba ? beforeAfter(item, offset+i) : frame(item, offset+i));
     });
-  });
-
-  var activeCat = "all";
-  var portraitOnly = false;
-
-  function applyFilter(){
-    var frames = grid.querySelectorAll(".frame");
-    var shown = 0;
-    frames.forEach(function(f){
-      var matchesCat = activeCat === "all" || f.dataset.cat === activeCat;
-      var matchesTag = !portraitOnly || f.dataset.tags.indexOf("retrato") !== -1;
-      var show = matchesCat && matchesTag;
-      f.hidden = !show;
-      if(show) shown++;
-    });
-    document.getElementById("count").textContent = "Mostrando " + shown + " de " + frames.length;
   }
 
-  var pills = document.querySelectorAll("#catPills .pill");
-  pills.forEach(function(p){
-    p.addEventListener("click", function(){
-      pills.forEach(function(o){ o.setAttribute("aria-pressed","false"); });
-      p.setAttribute("aria-pressed","true");
-      activeCat = p.dataset.cat;
-      applyFilter();
-    });
+  fill("stackSociales", sociales, 0);
+  fill("stackNegativo", negativo, 0);
+  fill("stackPortadas", portadas, 0);
+  fill("stackAll", sociales.concat(negativo, portadas), 0);
+
+  /* mobile menu */
+  var btnMenu = document.getElementById("btnMenu");
+  var panel = document.getElementById("mobilePanel");
+  btnMenu.addEventListener("click", function(){
+    var open = panel.style.display === "flex";
+    panel.style.display = open ? "none" : "flex";
+    btnMenu.setAttribute("aria-expanded", String(!open));
+  });
+  panel.querySelectorAll("a").forEach(function(a){
+    a.addEventListener("click", function(){ panel.style.display = "none"; btnMenu.setAttribute("aria-expanded","false"); });
   });
 
-  var sw = document.getElementById("portraitSwitch");
-  sw.addEventListener("click", function(){
-    portraitOnly = !portraitOnly;
-    sw.setAttribute("aria-pressed", String(portraitOnly));
-    applyFilter();
-  });
+  /* device preview toggle */
+  var btnDesktop = document.getElementById("btnDesktop");
+  var btnPhone = document.getElementById("btnPhone");
+  function setPreview(isPhone){
+    document.body.classList.toggle("preview-phone", isPhone);
+    btnDesktop.setAttribute("aria-pressed", String(!isPhone));
+    btnPhone.setAttribute("aria-pressed", String(isPhone));
+  }
+  btnDesktop.addEventListener("click", function(){ setPreview(false); });
+  btnPhone.addEventListener("click", function(){ setPreview(true); });
 
-  applyFilter();
+  /* active nav highlight */
+  var navLinks = document.querySelectorAll("nav.main a[data-nav]");
+  var sectionIds = ["portfolio","sociales","intervencion","sobre-mi","contacto"];
+  var sections = sectionIds.map(function(id){return document.getElementById(id);});
+  if("IntersectionObserver" in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          var id = entry.target.id;
+          navLinks.forEach(function(l){ l.classList.toggle("active", l.dataset.nav === id); });
+        }
+      });
+    }, {rootMargin:"0px 0px -75% 0px", threshold:0});
+    sections.forEach(function(s){ if(s) obs.observe(s); });
+  }
 })();
 </script>
+
 </body>
 </html>
